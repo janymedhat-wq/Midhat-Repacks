@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medhat Repacks | Local Game Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="Cat bf.jfif">
+
+    <style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        .sidebar-link {
+            display: block;
+            padding: 12px 20px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #888;
+            text-decoration: none;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+        .sidebar-link:hover, .sidebar-link.active {
+            color: #ffffff;
+            background: #111;
+            border-left-color: #ff00ff;
+        }
+        .nav-link {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #ffffff;
+            transition: color 0.2s;
+        }
+        .nav-link:hover {
+            color: #a3ff00;
+        }
+        /* Tight Grid Styling */
+        .game-card {
+            position: relative;
+            overflow: hidden;
+            background-color: #111;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        .game-card:hover {
+            transform: scale(1.05);
+            z-index: 10;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .game-cover {
+            aspect-ratio: 2/3;
+            width: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .game-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 10px;
+        }
+        .game-card:hover .game-overlay {
+            opacity: 1;
+        }
+        .sidebar {
+            width: 260px;
+            flex-shrink: 0;
+            background-color: #000;
+        }
+        .main-content {
+            background-color: #080808;
+            min-height: 100vh;
+        }
+        .top-nav {
+            background-color: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #1a1a1a;
+        }
+        .search-input {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: white;
+            padding: 10px 40px 10px 18px;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: #ff00ff;
+            background: #222;
+        }
+        .whatsapp-btn {
+            background-color: #25D366;
+            color: white;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px;
+            border-radius: 4px;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #444; }
+    </style>
+</head>
+<body class="flex flex-col">
+
+    <!-- Top Navigation -->
+    <nav class="top-nav flex items-center justify-between px-6 h-16 sticky top-0 z-[100]">
+        <div class="flex items-center gap-12 flex-grow">
+            <h1 class="text-white font-black text-2xl cursor-pointer tracking-tighter" onclick="location.reload()">
+                MEDHAT<span class="text-pink-500">REPACKS</span>
+            </h1>
+            
+            <div class="relative hidden md:block w-full max-w-md">
+                <input type="text" id="search-bar" class="search-input" placeholder="Search library..." oninput="handleSearch()">
+                <i class="fas fa-search absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500"></i>
+            </div>
+        </div>
+
+        <div class="hidden lg:flex items-center gap-8">
+            <a href="#" class="nav-link text-pink-500">Vip Access</a>
+            <a href="#" class="nav-link">Catalog</a>
+            <a href="https://wa.me/923153230782" class="bg-white text-black px-4 py-2 rounded font-bold text-[10px] uppercase">Contact</a>
+        </div>
+    </nav>
+
+    <div class="flex flex-grow">
+        <!-- Sidebar -->
+        <aside class="sidebar hidden md:block border-r border-zinc-900 pt-6">
+            <p class="px-5 mb-4 text-[10px] font-black text-zinc-500 uppercase tracking-widest">Browse</p>
+            <nav class="flex flex-col gap-1">
+                <a href="javascript:void(0)" class="sidebar-link active" onclick="filterCategory('all', this)">
+                    <i class="fas fa-th-large mr-3"></i> Everything
+                </a>
+                <a href="javascript:void(0)" class="sidebar-link" onclick="filterCategory('popular', this)">
+                    <i class="fas fa-fire mr-3"></i> Top Downloads
+                </a>
+                <a href="javascript:void(0)" class="sidebar-link" onclick="filterCategory('action', this)">
+                    <i class="fas fa-crosshairs mr-3"></i> Action / RPG
+                </a>
+            </nav>
+
+            <div class="px-5 mt-12">
+                <div class="p-5 bg-gradient-to-br from-zinc-900 to-black rounded-xl border border-zinc-800">
+                    <p class="text-white font-bold text-sm mb-1">Local Pickup</p>
+                    <p class="text-zinc-500 text-[11px] leading-relaxed mb-4">Fastest transfer in the city. Bring your HDD.</p>
+                    <a href="https://wa.me/923153230782" class="block text-center bg-pink-600 text-white text-[10px] font-black py-2 rounded uppercase tracking-wider">Join Group</a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content flex-grow">
+            <!-- Hero Banner -->
+            <div class="px-4 md:px-8 py-8">
+                <div class="mb-8">
+                    <h2 class="text-4xl font-black uppercase tracking-tighter mb-2" id="section-title">Hard Disk Library</h2>
+                    <p class="text-zinc-500 text-sm font-medium" id="results-count">Ready for instant copy</p>
+                </div>
+
+                <!-- Tight Grid Container -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2 md:gap-3" id="game-grid">
+                    <!-- Games injected here -->
+                </div>
+
+                <!-- No Results State -->
+                <div id="no-results" class="hidden text-center py-32">
+                    <i class="fas fa-search text-4xl text-zinc-800 mb-4"></i>
+                    <h3 class="text-xl font-bold text-zinc-400">Not found in my collection</h3>
+                    <button onclick="location.reload()" class="mt-4 text-pink-500 font-bold text-sm underline">Clear search</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div id="game-modal" class="fixed inset-0 bg-black/95 hidden z-[200] flex items-center justify-center p-4">
+        <div class="bg-zinc-900 text-white p-6 md:p-10 max-w-4xl w-full rounded-2xl relative border border-zinc-800">
+            <button onclick="closeModal()" class="absolute top-6 right-6 text-3xl text-zinc-500 hover:text-white">&times;</button>
+            
+            <div id="modal-content" class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div id="modal-info"></div>
+                <div id="modal-form" class="bg-black/50 p-6 rounded-xl border border-zinc-800">
+                    <h3 class="text-xl font-black mb-1 uppercase tracking-tighter text-pink-500">Order Transfer</h3>
+                    <p class="text-[10px] font-bold text-zinc-500 mb-6 uppercase tracking-widest">Local Drive Selection</p>
+                    
+                    <form onsubmit="handlePurchase(event)" class="space-y-4">
+                        <input type="hidden" id="form-game-title">
+                        <input type="hidden" id="form-game-price">
+                        <input type="hidden" id="form-game-img">
+                        
+                        <div>
+                            <label class="text-[10px] font-black uppercase text-zinc-400 mb-1 block">Your Name</label>
+                            <input type="text" id="customer-name" required placeholder="Enter name" class="w-full bg-zinc-800 border-none p-3 rounded text-white focus:ring-2 ring-pink-500">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black uppercase text-zinc-400 mb-1 block">Payment / Notes</label>
+                            <input type="text" id="transaction-id" required placeholder="e.g. Cash / JazzCash" class="w-full bg-zinc-800 border-none p-3 rounded text-white focus:ring-2 ring-pink-500">
+                        </div>
+                        
+                        <button type="submit" class="whatsapp-btn mt-4 hover:scale-[1.02] transition active:scale-95">
+                            <i class="fab fa-whatsapp text-xl"></i> Confirm Request
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="success-msg" class="hidden text-center py-10">
+                <div class="max-w-xs mx-auto mb-8 bg-black p-4 rounded-xl border-2 border-pink-500 shadow-[0_0_30px_rgba(255,0,255,0.2)]">
+                    <img id="receipt-img" src="" class="w-full aspect-[2/3] object-cover rounded-lg mb-4">
+                    <h2 class="font-black text-xl mb-2 text-pink-500 uppercase italic">Slot Booked</h2>
+                    <div id="receipt-details" class="text-xs text-left text-zinc-400 space-y-1 border-t border-zinc-800 pt-3"></div>
+                </div>
+                <button id="final-wa-link" class="whatsapp-btn max-w-xs mx-auto">
+                    SEND TO MEDHAT
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const MY_WHATSAPP = "923153230782";
+        
+        const GAMES = [
+            { id: 1, title: "MOH Warfighter", image: "games/warfighter.jpg", price: "Rs. 1500", category: 'action' },
+            { id: 2, title: "Battlefield 4", image: "games/battle.jpg", price: "Rs. 1500", category: 'popular' },
+            { id: 3, title: "Battlefield 2: Bad Company", image: "games/bf2.jpg", price: "Rs. 1000", category: 'action' },
+            { id: 4, title: "Call of Duty: Black Ops", image: "games/call.png", price: "Rs. 2000", category: 'popular' },
+            { id: 5, title: "Grand Theft Auto IV", image: "games/gta4.jfif", price: "Rs. 1500", category: 'action' },
+            { id: 6, title: "Watch Dogs", image: "games/watch.jfif", price: "Rs. 1200", category: 'action' },
+            { id: 7, title: "Far Cry 3", image: "games/farcry.jpg", price: "Rs. 1200", category: 'popular' },
+            { id: 8, title: "Sleeping Dogs", image: "games/images.jfif", price: "Rs. 1200", category: 'action' },
+            { id: 9, title: "Grand Theft Auto V", image: "games/gta.png", price: "Rs. 2500", category: 'popular' },
+            { id: 10, title: "Red Dead Redemption 2", image: "games/rdr.jpg", price: "Rs. 3500", category: 'popular' },
+            { id: 11, title: "Call of Duty: Black Ops II", image: "games/bops2.png", price: "Rs. 2000", category: 'action' },
+            { id: 12, title: "Assassin's Creed IV", image: "games/ass.jpg", price: "Rs. 1500", category: 'action' },
+            { id: 13, title: "Max Payne 3", image: "games/maxpayne.jpg", price: "Rs. 1200", category: 'action' },
+            { id: 14, title: "NFS Most Wanted", image: "games/wanted.jpg", price: "Rs. 800", category: 'popular' },
+            { id: 15, title: "CyberPunk 2077", image: "games/cyber.jpg", price: "Rs. 2000", category: 'popular' },
+            { id: 16, title: "Mafia III", image: "games/mafia3.jpg", price: "Rs. 1000", category: 'action' },
+            { id: 17, title: "BioShock Infinite", image: "games/wick.jpg", price: "Rs. 1200", category: 'action' },
+            { id: 18, title: "Spider Man 2", image: "games/spider.jpg", price: "Rs. 1200", category: 'popular' },
+            { id: 19, title: "Call of Duty Modern Warfare 3", image: "games/mw3.png", price: "Rs. 1000", category: 'action' },
+            { id: 20, title: "Metro: Last Light", image: "games/metro.jpg", price: "Rs. 1200", category: 'action' }
+        ];
+
+        let filteredGames = [...GAMES];
+
+        function renderGrid(data = filteredGames) {
+            const grid = document.getElementById('game-grid');
+            const noResults = document.getElementById('no-results');
+            const countLabel = document.getElementById('results-count');
+
+            if (data.length === 0) {
+                grid.innerHTML = "";
+                noResults.classList.remove('hidden');
+                countLabel.innerText = "No titles found";
+            } else {
+                noResults.classList.add('hidden');
+                countLabel.innerText = `${data.length} TITLES AVAILABLE`;
+                grid.innerHTML = data.map(game => `
+                    <div class="game-card group" onclick="openGame(${game.id})">
+                        <img src="${game.image}" 
+                             alt="${game.title}" 
+                             class="game-cover" 
+                             onerror="this.onerror=null;this.src='https://placehold.co/400x600?text=${encodeURIComponent(game.title)}'">
+                        <div class="game-overlay">
+                            <h4 class="text-white font-black text-xs uppercase leading-tight">${game.title}</h4>
+                            <p class="text-pink-500 font-bold text-[10px] mt-1">${game.price}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('search-bar').value.toLowerCase();
+            filteredGames = GAMES.filter(g => g.title.toLowerCase().includes(query));
+            renderGrid(filteredGames);
+        }
+
+        function filterCategory(cat, el) {
+            document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
+            if (el) el.classList.add('active');
+
+            const sectionTitle = document.getElementById('section-title');
+            sectionTitle.innerText = cat === 'all' ? 'Hard Disk Library' : cat.toUpperCase() + ' HITS';
+            
+            filteredGames = cat === 'all' ? [...GAMES] : GAMES.filter(g => g.category === cat);
+            renderGrid(filteredGames);
+        }
+
+        function openGame(id) {
+            const game = GAMES.find(g => g.id === id);
+            if (!game) return;
+
+            document.getElementById('modal-content').classList.remove('hidden');
+            document.getElementById('success-msg').classList.add('hidden');
+            
+            document.getElementById('form-game-title').value = game.title;
+            document.getElementById('form-game-price').value = game.price;
+            document.getElementById('form-game-img').value = game.image;
+            
+            document.getElementById('modal-info').innerHTML = `
+                <img src="${game.image}" 
+                     onerror="this.onerror=null;this.src='https://placehold.co/400x600?text=${encodeURIComponent(game.title)}'"
+                     class="w-full aspect-[2/3] object-cover rounded-xl shadow-2xl mb-6">
+                <div class="space-y-2">
+                    <h2 class="text-4xl font-black uppercase tracking-tighter leading-none">${game.title}</h2>
+                    <div class="inline-block bg-pink-500/10 text-pink-500 px-3 py-1 rounded text-sm font-black">${game.price}</div>
+                    <p class="text-zinc-500 text-xs font-medium pt-4">Full version repack from my local drive. High-speed transfer via USB 3.0 or SATA.</p>
+                </div>
+            `;
+            
+            document.getElementById('game-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function handlePurchase(e) {
+            e.preventDefault();
+            const game = document.getElementById('form-game-title').value;
+            const img = document.getElementById('form-game-img').value;
+            const name = document.getElementById('customer-name').value;
+            const tid = document.getElementById('transaction-id').value;
+
+            document.getElementById('receipt-img').src = img;
+            document.getElementById('receipt-details').innerHTML = `
+                <p><span class="text-zinc-500">ITEM:</span> ${game.toUpperCase()}</p>
+                <p><span class="text-zinc-500">USER:</span> ${name.toUpperCase()}</p>
+                <p><span class="text-zinc-500">METHOD:</span> ${tid.toUpperCase()}</p>
+            `;
+
+            const message = `*MEDHAT REPACKS - TRANSFER REQUEST*\n\n` +
+                            `*Game:* ${game}\n` +
+                            `*Customer:* ${name}\n` +
+                            `*Details:* ${tid}\n\n` +
+                            `Checking availability for local pickup!`;
+            
+            const waUrl = `https://wa.me/${MY_WHATSAPP}?text=${encodeURIComponent(message)}`;
+            document.getElementById('final-wa-link').onclick = () => window.open(waUrl, '_blank');
+            
+            document.getElementById('modal-content').classList.add('hidden');
+            document.getElementById('success-msg').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('game-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        window.onload = () => renderGrid(GAMES);
+    </script>
+</body>
+</html>
